@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookstore</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f2f2;
+    }
+
+
+    /* Animations */
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+
+    header {
+      background-color: #4a90e2;
+      padding: 20px;
+      border-bottom-left-radius: 60px;
+      border-bottom-right-radius: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      position: relative;
+      animation: fadeSlideDown 1s ease forwards;
+    }
+
+
+    .search-bar {
+      margin: 0 auto;
+    }
+
+
+    .search-bar input {
+      padding: 10px;
+      width: 300px;
+      border-radius: 20px;
+      border: none;
+    }
+
+
+    .login-icon {
+      position: absolute;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+
+    .login-icon img {
+      width: 30px;
+      height: 30px;
+    }
+
+
+    .login-icon span {
+      margin-left: 10px;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      transform: translateX(10px);
+    }
+
+
+    .login-icon:hover span {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+
+    main {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding: 20px;
+      animation: fadeIn 2s ease forwards;
+    }
+
+
+    .book {
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      cursor: pointer;
+    }
+
+
+    .book img {
+      max-width: 100%;
+      height: auto;
+    }
+
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #4a90e2;
+      color: white;
+      border-top-left-radius: 60px;
+      border-top-right-radius: 60px;
+      animation: fadeSlideUp 1s ease forwards;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Bookstore</h1>
+    <div class="search-bar">
+      <input type="text" placeholder="Search books...">
+    </div>
+    <div class="login-icon" onclick="location.href='login.html'">
+      <img src="https://cdn-icons-png.flaticon.com/512/456/456212.png" alt="Login" />
+      <span>Login</span>
+    </div>
+  </header>
+
+
+  <main id="book-list">
+    <!-- JS will populate books here -->
+  </main>
+
+
+  <div class="modal" id="bookModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <img id="modalImage" src="" alt="Book Image" style="width: 100%; max-height: 250px; object-fit: cover;" />
+      <p id="modalDescription" style="line-height: 1.6em; margin-top: 10px;"></p>
+      <p><strong>Price:</strong> ₹<span id="modalPrice"></span></p>
+      <p><strong>Pages:</strong> <span id="modalPages"></span></p>
+      <p><strong>Weight:</strong> <span id="modalWeight"></span> grams</p>
+      <p><strong>Rating:</strong> <span id="modalRating"></span>/5</p>
+      <button onclick="handleAction('cart')">Add to Cart</button>
+      <button onclick="handleAction('buy')">Buy</button>
+      <p id="loginMsg" style="color: red; display: none; margin-top: 10px;">Please login to continue.</p>
+    </div>
+  </div>
+
+
+  <footer class="footer">
+    © 2025 Bookstore | All rights reserved.
+  </footer>
+
+
+  <script>
+    const books = [
+      {
+        title: "The Alchemist",
+        img: "https://covers.openlibrary.org/b/id/8225631-L.jpg",
+        description: "A philosophical journey about finding one’s destiny and listening to one’s heart. Paulo Coelho's tale has touched millions around the world.",
+        price: 299,
+        pages: 208,
+        weight: 250,
+        rating: 4.5
+      },
+      {
+        title: "1984",
+        img: "https://covers.openlibrary.org/b/id/7222246-L.jpg",
+        description: "A dystopian novel by George Orwell that explores government surveillance and totalitarianism in a chilling future.",
+        price: 349,
+        pages: 328,
+        weight: 320,
+        rating: 4.7
+      },
+      {
+        title: "To Kill a Mockingbird",
+        img: "https://covers.openlibrary.org/b/id/8225265-L.jpg",
+        description: "Harper Lee’s classic story of racial injustice and moral growth in the Deep South, told through the eyes of a child.",
+        price: 399,
+        pages: 281,
+        weight: 290,
+        rating: 4.8
+      },
+      {
+        title: "The Great Gatsby",
+        img: "https://covers.openlibrary.org/b/id/7222161-L.jpg",
+        description: "F. Scott Fitzgerald’s tale of wealth, love, and betrayal in the Jazz Age, centered on the mysterious Jay Gatsby.",
+        price: 279,
+        pages: 180,
+        weight: 240,
+        rating: 4.3
+      },
+      {
+        title: "Pride and Prejudice",
+        img: "https://covers.openlibrary.org/b/id/8225294-L.jpg",
+        description: "Jane Austen’s timeless novel of manners, romance, and misunderstandings among the British gentry.",
+        price: 359,
+        pages: 279,
+        weight: 260,
+        rating: 4.6
+      },
+      {
+        title: "The Hobbit",
+        img: "https://covers.openlibrary.org/b/id/6979861-L.jpg",
+        description: "J.R.R. Tolkien’s fantasy adventure about Bilbo Baggins and his journey through Middle-earth to reclaim treasure.",
+        price: 459,
+        pages: 310,
+        weight: 300,
+        rating: 4.9
+      },
+      {
+        title: "The Catcher in the Rye",
+        img: "https://covers.openlibrary.org/b/id/8231856-L.jpg",
+        description: "J.D. Salinger’s story of teenage rebellion and identity as told by the cynical Holden Caulfield.",
+        price: 289,
+        pages: 234,
+        weight: 260,
+        rating: 4.2
+      },
+      {
+        title: "Moby Dick",
+        img: "https://covers.openlibrary.org/b/id/7222248-L.jpg",
+        description: "Herman Melville’s epic sea adventure of obsession and revenge as Captain Ahab hunts the white whale.",
+        price: 499,
+        pages: 585,
+        weight: 550,
+        rating: 4.4
+      }
+    ];
+
+
+    const container = document.getElementById("book-list");
+    books.forEach(book => {
+      const div = document.createElement("div");
+      div.className = "book";
+      div.innerHTML = `<img src="${book.img}" alt="${book.title}" /><h3>${book.title}</h3>`;
+      div.onclick = () => openModal(book);
+      container.appendChild(div);
+    });
+
+
+    function openModal(book) {
+      document.getElementById("modalTitle").innerText = book.title;
+      document.getElementById("modalImage").src = book.img;
+      document.getElementById("modalDescription").innerText = book.description;
+      document.getElementById("modalPrice").innerText = book.price;
+      document.getElementById("modalPages").innerText = book.pages;
+      document.getElementById("modalWeight").innerText = book.weight;
+      document.getElementById("modalRating").innerText = book.rating;
+      document.getElementById("loginMsg").style.display = "none";
+      document.getElementById("bookModal").style.display = "flex";
+    }
+
+
+    function closeModal() {
+      document.getElementById("bookModal").style.display = "none";
+    }
+
+
+    function handleAction(action) {
+      const loggedIn = localStorage.getItem("loggedIn");
+      if (loggedIn === "true") {
+        alert(`${action === 'cart' ? 'Added to cart' : 'Proceeding to buy'} successfully!`);
+      } else {
+        document.getElementById("loginMsg").style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
+
+
+  
