@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - BookNest</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      /* background: linear-gradient(to right, #6a11cb, #2575fc); */
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.7rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      background: #2575fc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      cursor: pointer;
+    }
+    .switch-text {
+      text-align: center;
+      margin-top: 1rem;
+      color: #555;
+    }
+    .switch-text a {
+      color: #2575fc;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .hidden {
+      display: none;
+    }
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="loginForm">
+      <h2>Login</h2>
+      <input type="text" id="loginUsername" placeholder="Username" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <button onclick="handleLogin()">Login</button>
+      <div class="switch-text">
+        <p>If account not created then create it</p>
+        <a onclick="toggleForms()">Sign</a>
+      </div>
+      <div id="loginMessage"></div>
+    </div>
+
+
+    <div id="signupForm" class="hidden">
+      <h2>Sign Up</h2>
+      <input type="text" id="signupUsername" placeholder="Choose Username" />
+      <input type="password" id="signupPassword" placeholder="Choose Password" />
+      <button onclick="handleSignup()">Register</button>
+      <div class="switch-text">
+        <p>Already have an account?</p>
+        <a onclick="toggleForms()">Back to Login</a>
+      </div>
+      <div id="signupMessage"></div>
+    </div>
+  </div>
+
+
+  <script>
+    function toggleForms() {
+      document.getElementById("loginForm").classList.toggle("hidden");
+      document.getElementById("signupForm").classList.toggle("hidden");
+      clearMessages();
+    }
+
+
+    function clearMessages() {
+      document.getElementById("loginMessage").innerHTML = "";
+      document.getElementById("signupMessage").innerHTML = "";
+    }
+
+
+    function handleSignup() {
+      const username = document.getElementById("signupUsername").value;
+      const password = document.getElementById("signupPassword").value;
+      if (username && password) {
+        localStorage.setItem("bookstore_user", username);
+        localStorage.setItem("bookstore_pass", password);
+        document.getElementById("signupMessage").innerHTML =
+          "<div class='success'>Account created! Go to login.</div>";
+      } else {
+        document.getElementById("signupMessage").innerHTML =
+          "<div class='error'>Please fill all fields.</div>";
+      }
+    }
+
+
+    function handleLogin() {
+      const user = localStorage.getItem("bookstore_user");
+      const pass = localStorage.getItem("bookstore_pass");
+      const inputUser = document.getElementById("loginUsername").value;
+      const inputPass = document.getElementById("loginPassword").value;
+
+
+      if (inputUser === user && inputPass === pass) {
+        document.getElementById("loginMessage").innerHTML =
+          "<div class='success'>Login successful! Redirecting...</div>";
+        setTimeout(() => {
+          window.location.href = "index.html"; // go back to home
+        }, 1000);
+      } else {
+        document.getElementById("loginMessage").innerHTML =
+          "<div class='error'>Invalid username or password.</div>";
+      }
+    }
+  </script>
+</body>
+</html>
+
+
